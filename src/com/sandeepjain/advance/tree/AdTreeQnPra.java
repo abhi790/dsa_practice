@@ -1,5 +1,7 @@
 package com.sandeepjain.advance.tree;
 
+import java.util.HashMap;
+
 public class AdTreeQnPra {
     //Utility method
     private boolean isEmpty(TreeNode root){
@@ -12,7 +14,7 @@ public class AdTreeQnPra {
     private int heightOfTree(TreeNode root){
         if(isLeafNode(root))
             return 1;
-        if(isEmpty(root)) {
+        else if(isEmpty(root)) {
             return 0;
         }
 
@@ -21,8 +23,6 @@ public class AdTreeQnPra {
 
         return 1 + Math.max(leftHeight,rightHeight);
     }
-
-
 
 
     //1.Determine if two tree are identical Helper
@@ -98,7 +98,7 @@ public class AdTreeQnPra {
     //5.Maximum width of tree
     public void maximumWidthBTHelper(){
         TreeNode root = new TreeNode();
-
+        System.out.println("The maximum width of the given Binary Tree is : " + maximumWidthBT(root));
     }
     public int maximumWidthBT(TreeNode root){
         int maxWidht = 0;
@@ -216,7 +216,59 @@ public class AdTreeQnPra {
 
 
     //10.Diameter of BT
+    public void diameterOfBTHelper(){
+        TreeNode root = new TreeNode();
+        System.out.println("The diameter of the given tree is : " + diameterOfBT(root));
+        System.out.println("The diameter of the given tree is : " + diameter(root));
 
+        diaEffModifyHeight(root);
+        System.out.println("The diameter of the given tree is : " + diameter);
+
+    }
+    //My solution takes O(N^2) time complexity, O(width of BT) space complexity
+    public int diameterOfBT(TreeNode root){
+        int diameter = 1;
+        java.util.Queue<TreeNode> queue = new java.util.LinkedList<TreeNode> ();
+        queue.add(root);
+        while(!queue.isEmpty()){
+            TreeNode temp = queue.poll();
+            int leftH = heightOfTree(temp.leftChild);
+            int rightH = heightOfTree(temp.rightChild);
+            int maxNode = leftH + rightH + 1;
+            if(maxNode > diameter)
+                diameter = maxNode;
+
+            if(temp.leftChild != null) queue.add(temp.leftChild);
+            if(temp.rightChild != null) queue.add(temp.rightChild);
+        }
+        return diameter;
+    }
+    //Sir's approach O(N^2) time complexity and O(N) auxiliary stack space
+    public int diameter(TreeNode root){
+        if(root == null) return 0;
+        int d1 = 1 + heightOfTree(root.leftChild) + heightOfTree(root.rightChild);
+        int d2 = diameter(root.leftChild);
+        int d3 = diameter(root.rightChild);
+        return Math.max(d1,Math.max(d2,d3));
+    }
+    //Sir's efficient solution using Hashmap, implement the below diameterEff method
+    public void diameterEfficientHelper(TreeNode root){
+        int diameter = 1;
+        java.util.HashMap<TreeNode, Integer> map = new java.util.HashMap<TreeNode,Integer>();
+        diameterEff(root,map);
+    }
+    public int diameterEff(TreeNode root, HashMap<TreeNode,Integer > map){
+        return 0;
+    }
+    int diameter = 0;
+    //By Modifying the height method we can find diameter of a given tree
+    public int diaEffModifyHeight(TreeNode root){
+        if(root == null) return 0;
+        int lh = diaEffModifyHeight(root.leftChild);
+        int rh = diaEffModifyHeight(root.rightChild);
+        diameter = Math.max(diameter,1+lh+rh);
+        return Math.max(lh,rh) + 1;
+    }
 
     //11.Vertical width of BT
 
@@ -259,42 +311,67 @@ public class AdTreeQnPra {
     //18.Construct BT from parent array
 
 
-    //19.Tree from postorder and inorder
+    //19.Tree from preorder and inorder
+    public void constructBTHelper(){
+        int [] pre = new int[]{10,20,30,40,50};
+        int []in = new int[]{20,10,40,30,50};
+        int inStarting = 0;
+        int inEnding = in.length;
+        TreeNode root = constructBT(pre,in, inStarting,inEnding);
+        //print the given tree
+        levelOrderTravLineByLine(root);
 
+    }
+    int preIndex = 0;
+    public TreeNode constructBT(int [] pre, int []in,int is, int ie){
+        if(is > ie) return null;
+        TreeNode root = new TreeNode(pre[preIndex++]);
+        int inIndex = 0;
+        for(int i = is; i <= ie; i++){
+            if(in[i] == root.data){
+                inIndex = i;
+                break;
+            }
+        }
+        root.leftChild = constructBT(pre,in,is,inIndex - 1);
+        root.rightChild = constructBT(pre,in, is,inIndex + 1);
+        return root;
+    }
 
     //20.Foldable BT
 
     //Driver code
     public static void main(String[] args) {
         AdTreeQnPra solve = new AdTreeQnPra();
+//
+//        //1.Determine if two tree are identical
+//        solve.isTwoTreeEqualHelper();
+//        //2.children sum parent
+//        solve.childrenSumHelper();
+//        //3.Level order traversal line by line
+//        solve.levelOrderTravLineByLineHelper();
+//        //4.Level order traversal in spiral form
+//
+//        //5.Maximum width of tree
+//        solve.maximumWidthBTHelper();
+//        //6.Check for balanced tree
+//        solve.balancedBTHelper();
+//        //7.Left view of BT
+//        solve.leftViewBTHelper();
+//        //8.Right view of BT
+//        solve.rightViewBTHelper();
+//        //9.Lowest common ancestor in BT
+//
+//        //10.Diameter of BT
+//        solve.diameterOfBTHelper();
+//
+//        //11.Vertical width of BT
+//
+//        //12.Mirror Tree
+//        solve.mirrorTreeHelperHelper();
+//        //13.Check if subtree
 
-        //1.Determine if two tree are identical
-        solve.isTwoTreeEqualHelper();
-        //2.children sum parent
-        solve.childrenSumHelper();
-        //3.Level order traversal line by line
-        solve.levelOrderTravLineByLineHelper();
-        //4.Level order traversal in spiral form
-
-        //5.Maximum width of tree
-        solve.maximumWidthBTHelper();
-        //6.Check for balanced tree
-        solve.balancedBTHelper();
-        //7.Left view of BT
-        solve.leftViewBTHelper();
-        //8.Right view of BT
-        solve.rightViewBTHelper();
-        //9.Lowest common ancestor in BT
-
-        //10.Diameter of BT
-
-        //11.Vertical width of BT
-
-        //12.Mirror Tree
-        solve.mirrorTreeHelperHelper();
-        //13.Check if subtree
-
-        //14.Make BT from LinkedlIst
+        //14.Make BT from LinkedList
 
         //15.BT To DLL
 
@@ -305,7 +382,7 @@ public class AdTreeQnPra {
         //18.Construct BT from parent array
 
         //19.Tree from postorder and inorder
-
+        solve.constructBTHelper();
         //20.Foldable BT
 
     }
